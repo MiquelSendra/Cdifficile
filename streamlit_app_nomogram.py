@@ -3,13 +3,13 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Load data from the new Excel file
-results_df = pd.read_excel("logistic_regression_selected_columns_translated.xlsx", index_col=0)
+# Load data from the new CSV file
+results_df = pd.read_csv("logistic_regression_selected_columns_translated.csv", index_col=0)
 
-# Load optimal features from the Excel file
-optimal_features_df = pd.read_excel("optimal_features_logistic_regression.xlsx", index_col=0)
+# Load optimal features from the CSV file
+optimal_features_df = pd.read_csv("optimal_features_logistic_regression.csv", index_col=0)
 
-# Streamlit app
+# Streamlit app@
 def main():
     st.title("Outcome Prediction Nomogram")
 
