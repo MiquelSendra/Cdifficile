@@ -4,10 +4,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load data from the new CSV file
-results_df = pd.read_csv("logistic_regression_selected_columns_translated.csv", index_col=0)
+results_df = pd.read_csv("logistic_regression_selected_columns_translated.csv", sep= ";", index_col=0)
 
 # Load optimal features from the CSV file
-optimal_features_df = pd.read_csv("optimal_features_logistic_regression.csv", index_col=0)
+optimal_features_df = pd.read_csv("optimal_features_logistic_regression.csv", sep= ";", index_col=0)
 
 # Streamlit app@
 def main():

@@ -1,4 +1,4 @@
-﻿;Death_coefficients;Death_Std_Error;Death_z;Death_pval;Reinfection_coefficients;Reinfection_Std_Error;Reinfection_z;Reinfection_pval
+;Death_coefficients;Death_Std_Error;Death_z;Death_pval;Reinfection_coefficients;Reinfection_Std_Error;Reinfection_z;Reinfection_pval
 const;-2,294817149;0,444554322;-5,162062402;2,44244E-07;-1,096009066;0,360328532;-3,04169381;0,002352511
 Metronidazole;-0,24164922;0,779975726;-0,309816333;0,75670063;-0,23931372;0,791698637;-0,302278807;0,762439533
 Vancomycin;1,495228339;0,5426353;2,755494047;0,005860357;0,80184706;0,494676755;1,620951566;0,105028026
