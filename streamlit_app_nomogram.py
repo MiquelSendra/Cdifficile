@@ -3,13 +3,11 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Load data from the new Excel file
-results_df = pd.read_excel("logistic_regression_selected_columns_translated.xlsx", index_col=0)
+# Load data from the CSV file with commas as decimals
+results_df = pd.read_csv("logistic_regression_selected_columns_translated.csv", sep=";", decimal=",", index_col=0)
+optimal_features_df = pd.read_csv("optimal_features_logistic_regression.csv", sep=";", decimal=",", index_col=0)
 
-# Load optimal features from the Excel file
-optimal_features_df = pd.read_excel("optimal_features_logistic_regression.xlsx", index_col=0)
-
-# Streamlit app
+# Streamlit app@
 def main():
     st.title("Outcome Prediction Nomogram")
 
@@ -20,6 +18,7 @@ def main():
 
     # Filter results_df to include only optimal features
     optimal_features = optimal_features_df.values.flatten()
+    optimal_features = [feature for feature in optimal_features if pd.notna(feature)]  # Remove NaN values
     filtered_results_df = results_df.loc[optimal_features]
 
     # Fix the issue with repeated outcome labels in the title
@@ -45,15 +44,23 @@ def main():
 
     predictions = []
     for outcome in ["Death", "Reinfection"]:
-        coefs = filtered_results_df[f"{outcome}_coefficients"]
-        intercept = results_df.loc["const", f"{outcome}_coefficients"]
-        linear_predictor = intercept + sum(
-            coefs[feature] * inputs[feature] for feature in filtered_results_df.index
-        )
+        try:
+            # Ensure coefficients and intercept are numeric
+            coefs = pd.to_numeric(filtered_results_df[f"{outcome}_coefficients"], errors="coerce").fillna(0)
+            intercept = pd.to_numeric(results_df.loc["const", f"{outcome}_coefficients"], errors="coerce")
+            intercept = 0 if pd.isna(intercept) else intercept  # Handle NaN for scalar intercept
 
-        # Convert to probability using logistic function
-        probability = 1 / (1 + np.exp(-linear_predictor))
-        predictions.append({"Outcome": outcome, "Probability": probability})
+            # Calculate linear predictor
+            linear_predictor = intercept + sum(
+                coefs[feature] * inputs[feature] for feature in filtered_results_df.index
+            )
+
+            # Convert to probability using logistic function
+            probability = 1 / (1 + np.exp(-linear_predictor))
+            predictions.append({"Outcome": outcome, "Probability": probability})
+        except Exception as e:
+            st.error(f"Error calculating predictions for {outcome}: {e}")
+            st.stop()
 
     # Convert predictions to DataFrame
     predictions_df = pd.DataFrame(predictions)
