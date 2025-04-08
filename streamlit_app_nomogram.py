@@ -9,6 +9,9 @@ optimal_features_df = pd.read_csv("optimal_features_logistic_regression.csv", se
 
 # Streamlit app@
 def main():
+    # Expand the sidebar by default
+    st.set_page_config(layout="wide")
+
     st.title("Outcome Prediction Nomogram")
 
     st.sidebar.header("Input Patient Data")
@@ -29,18 +32,19 @@ def main():
                 feature_outcome_map[feature] = set()
             feature_outcome_map[feature].add(outcome)
 
-    # Create input fields with combined outcome information
+    # Create input fields with Yes/No options
     inputs = {}
-    # Set default values for inputs
     for feature, outcomes in feature_outcome_map.items():
-        outcome_text = " ".join(sorted(outcomes))  # Ensure unique and sorted outcomes
-        default_value = 1 if feature == "Vancomycin" else 0
-        inputs[feature] = st.sidebar.selectbox(
-            f"{feature}", options=[0, 1], index=default_value, key=f"{feature}_key"
+        #outcome_text = " ".join(sorted(outcomes))  # Ensure unique and sorted outcomes
+        default_value = "Yes" if feature == "Vancomycin" else "No"
+        user_input = st.sidebar.radio(
+            f"{feature}", options=["Yes", "No"], index=0 if default_value == "Yes" else 1, key=f"{feature}_key"
         )
+        # Convert Yes/No to 1/0 for analysis
+        inputs[feature] = 1 if user_input == "Yes" else 0
 
     # Automatically calculate predictions on page load
-    filtered_results_df = filtered_results_df[~filtered_results_df.index.duplicated(keep='first')]
+    filtered_results_df = filtered_results_df[~filtered_results_df.index.duplicated(keep="first")]
 
     predictions = []
     for outcome in ["Death", "Reinfection"]:
